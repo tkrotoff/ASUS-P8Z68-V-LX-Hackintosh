@@ -1,9 +1,9 @@
 # Asus-P8Z68-V-LX-Hackintosh
 
-Hackintosh for [Asus P8Z68-V LX](https://www.asus.com/Motherboards/P8Z68V_LX/) motherboard using OS X 10.10 Yosemite.
+Hackintosh for [Asus P8Z68-V LX](https://www.asus.com/Motherboards/P8Z68V_LX/) motherboard using OS X 10.10 Yosemite.  
 This is a minimal guide that fits my hardware configuration.
 
-Intel Z68 chipset, LGA1155 socket.
+Intel Z68 chipset, LGA1155 socket.  
 Supports 2nd gen. ([32 nm - Sandy Bridge](http://en.wikipedia.org/wiki/Sandy_Bridge)) Intel Core CPUs.
 
 Onboard devices:
@@ -32,7 +32,7 @@ cd UEFIPatch_0.3.5_osx
 ./UEFIPatch ../P8Z68-V-LX-ASUS-4105.ROM # Generates file `P8Z68-V-LX-ASUS-4105.ROM.patched`
 ```
 
-/!\ This operation can brick your motherboard, do it at your own risk /!\
+/!\ This operation can brick your motherboard, do it at your own risk /!\  
 Flash your BIOS using 'ASUS EZ Flash 2 Utility' and file `P8Z68-V-LX-ASUS-4105.ROM.patched`.
 
 Sources:
