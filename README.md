@@ -15,7 +15,7 @@ Onboard devices:
 
 Latest stable BIOS: version [4105 (2013/07/23 update, 2013/07/01 build date)](https://www.asus.com/Motherboards/P8Z68V_LX/HelpDesk_Download/)
 - F5: Optimized Defaults
-- Boot > Setup Mode > Advanced Mode
+- Boot > Setup Mode - Advanced Mode
 
 You can activate [Intel Virtualization Technology (VT-x)](http://en.wikipedia.org/wiki/X86_virtualization#Intel_virtualization_.28VT-x.29) once OS X is installed:
 - Advanced > CPU Configuration > Intel Virtualization Technology - Enabled
