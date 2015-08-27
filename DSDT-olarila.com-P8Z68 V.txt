@@ -1,0 +1,244 @@
+into_all all code_regex _T_0 replaceall_matched begin T_0 end;
+into_all all code_regex _T_1 replaceall_matched begin T_1 end;
+into_all all code_regex _T_2 replaceall_matched begin T_2 end;
+into_all all code_regex _T_3 replaceall_matched begin T_3 end;
+into_all all code_regex _T_4 replaceall_matched begin T_4 end;
+into_all all code_regex Or\s\(0x03,\sPARM\) replaceall_matched
+begin
+Or (PARM, 0x03, PARM)
+end;
+into_all scope label _PR code_regex Alias\s\([^\n]+\n removeall_matched;
+into_all scope label \_PR code_regex Alias\s\([^\n]+\n removeall_matched;
+into method label DTGP remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (DTGP, 5, NotSerialized)\n
+{\n
+    If (LEqual (Arg0, Buffer (0x10)\n
+            {\n
+                /* 0000 */    0xC6, 0xB7, 0xB5, 0xA0, 0x18, 0x13, 0x1C, 0x44, \n
+                /* 0008 */    0xB0, 0xC9, 0xFE, 0x69, 0x5E, 0xAF, 0x94, 0x9B\n
+            }))\n
+    {\n
+        If (LEqual (Arg1, One))\n
+        {\n
+            If (LEqual (Arg2, Zero))\n
+            {\n
+                Store (Buffer (One)\n
+                    {\n
+                        0x03\n
+                    }, Arg4)\n
+                Return (One)\n
+            }\n
+            If (LEqual (Arg2, One))\n
+            {\n
+                Return (One)\n
+            }\n
+        }\n
+    }\n
+    Store (Buffer (One)\n
+        {\n
+            0x00\n
+        }, Arg4)\n
+    Return (Zero)\n
+}
+end;
+into device label PWRB code_regex (Name\s\()_HID(\,\sEisaId\s\(\"PNP0C0C\"\)\)) replace_matched begin %1_CID%2 end;
+into device name_hid PNP0000 code_regex IRQNoFlags\s\(\)\n\s+\{(\d+)\} remove_matched;
+into device name_hid PNP0100 code_regex IRQNoFlags\s\(\)\n\s+\{(\d+)\} remove_matched;
+into device name_hid PNP0B00 code_regex IRQNoFlags\s\(\)\n\s+\{(\d+)\} remove_matched;
+into device name_hid PNP0103 code_regex_not IRQNoFlags code_regex Name\s\(([^,]+),\sResourceTemplate\s\(\)\n\s+\{((?:.|\n)*)\}\) replace_matched
+begin
+Name (%1, ResourceTemplate ()\n
+                    {\n
+                        IRQNoFlags ()\n
+                            {0}\n
+                        IRQNoFlags ()\n
+                            {8}\n
+%2
+})
+end;
+into method label _DSM parent_adr 0x001F0000 remove_entry;
+into device name_adr 0x001F0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    Store (Package (0x02)\n
+        {\n
+            "device-id", \n
+            Buffer (0x04)\n
+            {\n
+                0x49, 0x1c, 0x00, 0x00\n
+            }\n
+        }, Local0)\n
+    DTGP (Arg0, Arg1, Arg2, Arg3, RefOf (Local0))\n
+    Return (Local0)\n
+}
+end;
+into_all all code_regex Name\s\(RPMV,\sPackage\s\(0x00\) replaceall_matched
+begin
+Name (RPMV, Package (zero)
+end;
+into device label SPKR remove_entry;
+into device label FDC remove_entry;
+into device label FDC0 remove_entry;
+into device label LPT1 remove_entry;
+into device label LPTE remove_entry;
+into device label ECP1 remove_entry;
+into device label MEM remove_entry;
+into device label ^^RMEM remove_entry;
+into device label IDE1 set_label begin SATA end;
+into device name_hid PNP0B00 code_regex (IO\s\((?:\s*[^,]+,\s*(?:\/\/\s.*)?\s*\n)+\s*)(\dx\d+)(,\s*(?:\/\/\s.*)?\s*\n\s*\)) replace_matched begin %10x02%3 end;
+into device name_adr 0x001F0003 parent_label PCI0 remove_entry;
+into device label PCI0 insert
+begin
+Device (SBUS)\n
+{\n
+    Name (_ADR, 0x001F0003)\n
+    Device (BUS0)\n
+    {\n
+        Name (_CID, "smbus")\n
+        Name (_ADR, Zero)\n
+        Device (DVL0)\n
+        {\n
+            Name (_ADR, 0x57)\n
+            Name (_CID, "diagsvault")\n
+        }\n
+    }\n
+    Method (_DSM, 4, NotSerialized)\n
+    {\n
+        Store (Package (0x02)\n
+            {\n
+                "device-id", \n
+                Buffer (0x04)\n
+                {\n
+                    0x30, 0x3A, 0x00, 0x00\n
+                }\n
+            }, Local0)\n
+        DTGP (Arg0, Arg1, Arg2, Arg3, RefOf (Local0))\n
+        Return (Local0)\n
+    }\n
+}
+end;
+into device name_adr 0x001B0000 set_label
+begin
+HDEF
+end;
+into_all all code_regex AZAL replaceall_matched
+begin
+HDEF
+end;
+into device name_adr 0x001B0000 parent_label PCI0 remove_entry;
+into device label PCI0 insert
+begin
+Device (HDEF)\n
+{\n
+    Name (_ADR, 0x001B0000)\n
+    Method (_DSM, 4, NotSerialized)\n
+    {\n
+        Store (Package (0x04)\n
+            {\n
+                "layout-id", \n
+                Buffer (0x04)\n
+                {\n
+                    0x0C, 0x00, 0x00, 0x00\n
+                }, \n
+                "PinConfigurations", \n
+                Buffer (Zero) {}\n
+            }, Local0)\n
+        DTGP (Arg0, Arg1, Arg2, Arg3, RefOf (Local0))\n
+        Return (Local0)\n
+    }\n
+}
+end;
+into method label _PTS code_regex_not If\s\(LEqual\s\(Arg0,\s0x05\)\) code_regex ^((?:.|\n)*)$ replace_matched
+begin
+        If (LEqual (Arg0, 0x05)) {}\n
+        Else\n
+        {\n
+%1
+        }
+end;
+into method label _STA parent_hid PNP0103 remove_entry;
+into device name_hid PNP0103 insert
+begin
+Method (_STA, 0, NotSerialized)\n
+{\n
+    Return (0x0F)\n
+}
+end;
+into method label _CRS parent_hid PNP0103 remove_entry;
+into device name_hid PNP0103 insert
+begin
+Method (_CRS, 0, NotSerialized)\n
+{\n
+    Return (CRS)\n
+}
+end;
+into_all all code_regex (Acquire\s\(MUT0,\s0x)....\)
+replace_matched
+begin
+%1FFFF)
+end;
+into method label SIOS code_regex Return\s\(Zero\) remove_matched;
+into method label SIOS insert
+begin
+Return (Zero)
+end;
+into method label STM code_regex Return\s\(Zero\) remove_matched;
+into method label STM insert
+begin
+Return (Zero)
+end;
+into method label _DSM parent_adr 0x001D0000 remove_entry;
+into device name_adr 0x001D0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+                {\n
+                    Store (Package ()\n
+                       {\n
+                        "AAPL,current-available",\n
+                        0x0834,\n
+                        "AAPL,current-extra",\n
+                        0x0A8C,\n
+                        "AAPL,current-extra-in-sleep",\n
+                        0x0A8C,\n
+                        "AAPL,max-port-current-in-sleep",\n
+                        0x0834,\n
+                        "AAPL,device-internal",\n
+                        0x02,\n
+                        Buffer (0x01)\n
+                        {\n
+                            0x00\n
+                        }\n
+                        }, Local0)\n
+                    DTGP (Arg0, Arg1, Arg2, Arg3, RefOf (Local0))\n
+                    Return (Local0)\n
+                }
+end;
+into method label _DSM parent_adr 0x001A0000 remove_entry;
+into device name_adr 0x001A0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+                {\n
+                    Store (Package ()\n
+                       {\n
+                        "AAPL,current-available",\n
+                        0x0834,\n
+                        "AAPL,current-extra",\n
+                        0x0A8C,\n
+                        "AAPL,current-extra-in-sleep",\n
+                        0x0A8C,\n
+                        "AAPL,max-port-current-in-sleep",\n
+                        0x0834,\n
+                        "AAPL,device-internal",\n
+                        0x02,\n
+                        Buffer (0x01)\n
+                        {\n
+                            0x00\n
+                        }\n
+                        }, Local0)\n
+                    DTGP (Arg0, Arg1, Arg2, Arg3, RefOf (Local0))\n
+                    Return (Local0)\n
+                }
+end

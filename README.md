@@ -43,6 +43,14 @@ Sources:
 
 My tests (sleep, wake, shutdown...) have concluded that there is no need to generate a patched `DSDT.aml` file.
 
+Sources:
+- [How to edit your own DSDT with MaciASL](http://www.macbreaker.com/2014/03/how-to-edit-your-own-dsdt-with-maciasl.html)
+- [Creating a DSDT using MaciASL](http://pjalm.com/forums/index.php?topic=3.0)
+- [Fork of MaciASL by RehabMan](https://github.com/RehabMan/OS-X-MaciASL-patchmatic)
+- [ASUS DSDT patches repository for MaciASL by PJALM](http://maciasl.sourceforge.net/pjalm/asus/)
+- [olarila.com - DSDT patches by motherboard](http://olarila.com/forum/packs.php)
+- [Beta Asus Sandy Bridge Sleep/Wake Fix](http://www.tonymacx86.com/dsdt/50036-beta-asus-sandy-bridge-sleep-wake-fix.html)
+
 ## MultiBeast
 
 Using version 7.x
