@@ -1,6 +1,6 @@
 # Asus-P8Z68-V-LX-Hackintosh
 
-Hackintosh for [Asus P8Z68-V LX](https://www.asus.com/Motherboards/P8Z68V_LX/) motherboard using OS X 10.10 Yosemite.  
+Hackintosh for [ASUS P8Z68-V LX](https://www.asus.com/Motherboards/P8Z68V_LX/) motherboard using OS X 10.10 Yosemite.  
 This is a minimal guide that fits my hardware configuration.
 
 Intel Z68 chipset, LGA1155 socket.  
@@ -29,11 +29,11 @@ open P8Z68-V-LX-ASUS-4105.zip
 curl -OL https://github.com/LongSoft/UEFITool/releases/download/0.20.5/UEFIPatch_0.3.5_osx.zip
 open UEFIPatch_0.3.5_osx.zip
 cd UEFIPatch_0.3.5_osx
-./UEFIPatch ../P8Z68-V-LX-ASUS-4105.ROM # Generates file `P8Z68-V-LX-ASUS-4105.ROM.patched`
+./UEFIPatch ../P8Z68-V-LX-ASUS-4105.ROM # Generates P8Z68-V-LX-ASUS-4105.ROM.patched
 ```
 
 /!\ This operation can brick your motherboard, do it at your own risk /!\  
-Flash your BIOS using 'ASUS EZ Flash 2 Utility' and file `P8Z68-V-LX-ASUS-4105.ROM.patched`.
+Flash your BIOS using "ASUS EZ Flash 2 Utility" and file `P8Z68-V-LX-ASUS-4105.ROM.patched`.
 
 Sources:
 - [Power Management on Asus 1155 Motherboards](http://www.tonymacx86.com/bios-uefi/43486-asus-1155-patched-bios-repository.html)
