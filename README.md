@@ -74,6 +74,10 @@ Sources:
 
 Using [Geekbench](http://www.primatelabs.com/geekbench/), you should get a score (Intel Core i7-2700K @ 3.50 GHz) > 3000 (single-core) > 11000 (multi-core).
 
+## Other tools and links
+
+- [RTL8111 Driver for OS X](https://github.com/Mieze/RTL8111_driver_for_OS_X): RealtekRTL8111.kext source code
+
 ## License
 
 Do whatever you like, this is public domain.
