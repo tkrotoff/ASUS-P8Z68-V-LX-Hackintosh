@@ -14,10 +14,16 @@ Onboard devices:
 ## BIOS Settings
 
 Latest stable BIOS: version [4105 (2013/07/23 update, 2013/07/01 build date)](https://www.asus.com/Motherboards/P8Z68V_LX/HelpDesk_Download/)
-- Del: enter BIOS
-- F8: list the boot entries
-- F5: Optimized Defaults
-- Boot > Setup Mode - Advanced Mode
+- Del: enter the BIOS setup
+- F8: display the boot menu
+
+- F5: reset to default settings (Optimized Defaults)
+- Advanced > USB Configuration > EHCI Hand-off: Enabled (optional)
+- Advanced > Onboard Devices Configuration > Serial Port Configuration > Serial Port: Disabled (optional)
+- Boot > Full Screen Logo: Disabled (optional)
+- Boot > Setup Mode: Advanced Mode (optional)
+
+Do not touch option "Boot > PCI ROM Priority", in my case it crashes the BIOS and a clear CMOS is then needed
 
 ## Patched BIOS to avoid kernel panic with AppleIntelCPUPowerManagement.kext
 
@@ -70,7 +76,7 @@ Sources:
 
 ```Shell
 diskutil list
-mkdir /Volumes/EFI
+sudo mkdir /Volumes/EFI
 sudo mount_msdos /dev/disk0s1 /Volumes/EFI
 ```
 
@@ -84,7 +90,15 @@ Add `-v` flag to file `/Volumes/EFI/EFI/CLOVER/config.plist`:
 
 ## Enable trim
 
-`sudo trimforce enable`
+If you own a SSD you should enable TRIM support:
+
+```Shell
+sudo trimforce enable
+```
+
+Sources:
+- [How to Enable TRIM on Third Party SSDs in Mac OS X with trimforce](http://osxdaily.com/2015/10/29/use-trimforce-trim-ssd-mac-os-x/)
+- [Enable TRIM for Third-Party SSDs in OS X with a Terminal Command](http://lifehacker.com/enable-trim-for-third-party-ssds-in-os-x-with-a-termina-1714978260)
 
 ## Nvidia Web Driver
 
@@ -111,15 +125,15 @@ The ASUS P8Z68 UEFI BIOS will recognize a USB key configured with Clover "Instal
 Using old Clover versions you could boot on using Clover USB key and add the boot entry for your hard drive into the BIOS using "Clover Boot Options" > "Add Clover boot options for all entries".
 This is not possible anymore (why?), instead you will need to manually add the boot entry.
 
-Open "Clover > Start UEFI Shell" and play with `bcfg`:
+Open "Clover > Start UEFI Shell 64" and play with `bcfg`:
 
 ```Shell
 map fs* # Show all partitions
-fs0: # Switch to fs0, fs1, fs2... partitions
-ls # List the content
-ls /efi/boot
+fs0: # Switch to fs0, fs1, fs2... partition
+ls # List the partition content
+ls EFI/BOOT
 bcfg boot dump # List current boot entries
-bcfg boot add N bootx64.efi "Clover" # Add /efi/bootbootx64.efi as a boot entry labeled "Clover", N being 0 (first boot entry), 1 (second boot entry)...
+bcfg boot add N EFI/BOOT/BOOTX64.EFI "Clover" # Add EFI/BOOT/BOOTX64.EFI as a boot entry labeled "Clover", N being 0 (first boot entry), 1 (second boot entry)...
 bcfg boot rm N # Remove a boot entry given its number N in the list
 exit # Get back to Clover main screen
 reset # Restart the computer
@@ -138,6 +152,8 @@ Using [Geekbench](http://www.primatelabs.com/geekbench/) with an Intel Core i7-2
 - Version 4 64bits: > 3600 (single-core), > 11000 (multi-core)
 
 Using [Unigine Valley Benchmark 1.0](https://unigine.com/products/benchmarks/valley/) in 1920x1080/medium with a GTX 970, you should get a score > 2900
+
+Using Cinebench R15: OpenGL > 60 fps, CPU > 600 cb
 
 ## Other tools and links
 
