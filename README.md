@@ -113,6 +113,8 @@ I've tried to replace `OsxAptioFix2Drv-64.efi` by `OsxAptioFixDrv-64.efi` withou
 
 Tested using Clover v2.3k r3766 (packaged with MultiBeast 9.0.1), r3974 and r3998.
 
+See [issue #2](https://github.com/tkrotoff/ASUS-P8Z68-V-LX-Hackintosh/issues/2) for possible solutions.
+
 Sources:
 - [NVIDIA Releases Alternate Graphics Drivers for macOS Sierra 10.12.3](https://www.tonymacx86.com/threads/nvidia-releases-alternate-graphics-drivers-for-macos-sierra-10-12-3-367-15-10-35.213122/)
 - [Big List of Solutions for El Capitan Install Problems](https://www.tonymacx86.com/threads/big-list-of-solutions-for-el-capitan-install-problems.173991/#CategoryFreeze)
