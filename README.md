@@ -161,6 +161,207 @@ Using Cinebench R15: OpenGL > 60 fps, CPU > 600 cb
 
 - [RTL8111 Driver for OS X](https://github.com/Mieze/RTL8111_driver_for_OS_X): RealtekRTL8111.kext source code
 
+
+## Clover
+
+Download and run Clover:
+
+- Installation Type > Change Install Location... - Select the disk where you want to install Clover
+- Installation Type > Customize - Check "Install for UEFI booting only"
+- Installation Type > Drivers64UEFI - OsxAptioFixDrv-64 (Fix memory problems for American Megatrends Inc. AMI Aptio UEFI BIOS)
+- Installation Type > Customize - Check "Install RC scripts on target volume" (Only when installing on a hard drive, not needed when creating a bootable USB key)
+
+Sources:
+- [All in one guides for Hackintosh](http://www.insanelymac.com/forum/topic/298027-guide-aio-guides-for-hackintosh/)
+- [Gigabyte Z77X UD5H Clover UEFI Install/Tweak guide](http://www.insanelymac.com/forum/topic/288829-guide-gigabyte-z77x-ud5h-clover-uefi-installtweak-guide/)
+
+The ASUS P8Z68 has a buggy? UEFI BIOS: it will recognize a USB key configured with Clover "Install for UEFI booting only" but not a hard drive.
+Boot on the Clover USB key and manually add the boot entry for your hard drive into the BIOS using "Clover Boot Options" > "Add Clover boot options for all entries".
+
+Sources:
+- [ASUS P8z68 won't boot without USB-stick](http://www.tonymacx86.com/yosemite-desktop-support/158425-asus-p8z68-wont-boot-without-usb-stick.html)
+- [Clover just WILL NOT see OS X!](http://www.tonymacx86.com/yosemite-desktop-support/147375-clover-just-will-not-see-os-x-2.html#post913505)
+- [Booting UEFI with Clover on Asus P8Z68-V/GEN3](https://www.reddit.com/r/hackintosh/comments/21ywt4/booting_uefi_with_clover_on_asus_p8z68vgen3/)
+
+## Clover Configurator
+
+- Acpi > IntelGFX
+- Boot > Verbose (-v)
+- ~~Boot > dart=0~~
+- ~~Devices > Fake ID > IntelGFX 0x01168086~~
+- ~~Graphics > Patch VBios~~
+- Graphics > Inject Intel (for HD3000)
+- SMBIOS > iMac12,2
+
+## Mount the EFI system partition
+
+(No need to download and install an application like EFI Mounter, `diskutil` will do it)
+
+```Shell
+diskutil list # List the partitions
+diskutil umount EFI_IDENTIFIER # EFI_IDENTIFIER will be disk0s1 most of the time
+diskutil mount EFI_IDENTIFIER
+```
+
+The Clover installer automatically mounts the partition at /Volumes/ESP instead of /Volumes/EFI
+
+## HFSPlus.efi
+
+Mandatory
+
+```Shell
+rm /Volumes/EFI/EFI/CLOVER/drivers64UEFI/VBoxHfs-64.efi
+curl -OL https://github.com/JrCs/CloverGrowerPro/raw/master/Files/HFSPlus/X64/HFSPlus.efi
+cp HFSPlus.efi /Volumes/EFI/EFI/CLOVER/drivers64UEFI/
+```
+
+## FakeSMC.kext
+
+Mandatory
+
+```Shell
+curl -OL https://bitbucket.org/RehabMan/os-x-fakesmc-kozlek/downloads/RehabMan-FakeSMC-2015-0504.zip
+open RehabMan-FakeSMC-2015-0504.zip
+cp -r RehabMan-FakeSMC-2015-0504/*.kext /Volumes/EFI/EFI/CLOVER/kexts/10.10/
+```
+
+## DSDT and SSDT
+
+If you have a custom DSDT or SSDT
+
+```Shell
+cp DSDT.aml /Volumes/EFI/EFI/CLOVER/ACPI/patched/
+cp SSDT.aml /Volumes/EFI/EFI/CLOVER/ACPI/patched/
+```
+
+## Other popular kexts
+
+### RealtekRTL8111.kext
+
+Driver for the Realtek RTL8111/8168 family
+
+```Shell
+curl -OL https://bitbucket.org/RehabMan/os-x-realtek-network/downloads/RehabMan-Realtek-Network-v2-2015-0526.zip
+open RehabMan-Realtek-Network-v2-2015-0526.zip
+cp -r RehabMan-Realtek-Network-v2-2015-0526/Release/RealtekRTL8111.kext /Volumes/EFI/EFI/CLOVER/kexts/10.10/
+```
+
+### AtherosE2200Ethernet.kext
+
+Driver for Qualcomm Atheros AR816x, AR817x and Killer E220x
+Manually download it from http://www.insanelymac.com/forum/files/file/313-atherose2200ethernet/ then:
+
+```Shell
+open ~/Downloads/AtherosE2200Ethernet-V2.0.1.zip
+cp -r ~/Downloads/AtherosE2200Ethernet-V2.0.1/Release/AtherosE2200Ethernet.kext /Volumes/EFI/EFI/CLOVER/kexts/10.10/
+```
+
+### Realtek ALCxxx onboard audio
+
+Patch AppleHDA.kext for Realtek ALC Audio support
+
+```Shell
+curl -OL https://github.com/toleda/audio_CloverALC/raw/master/audio_cloverALC-110.command.zip
+open audio_cloverALC-110.command.zip
+./audio_cloverALC-110_v1.0f.command
+[...]
+Confirm Realtek ALC887 (y/n): y
+Enable HD4600 HDMI audio (y/n): n
+Clover Audio ID Injection (y/n): y
+Use Audio ID: 1 (y/n): n
+Audio IDs:
+1 - 3/5/6 port Realtek ALCxxx audio
+2 - 3 port (5.1) Realtek ALCxxx audio (n/a 885)
+3 - HD3000/HD4000 HDMI and Realtek ALCxxx audio (n/a 885/1150 & 887/888 Legacy)
+Select Audio ID: 3
+[...]
+```
+
+## DSDT
+
+### HD3000
+
+####
+
+```
+into method label _DSM parent_adr 0x00020000 remove_entry;
+into device name_adr 0x00020000 insert
+begin
+Method (_DSM, 4, NotSerialized)
+{
+If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
+Return (Package()
+{
+"device-id", Buffer () { 0x26, 0x01, 0x00, 0x00 },
+"hda-gfx", Buffer () { "onboard-1" },
+"AAPL,snb-platform-id", Buffer () { 0x10, 0x00, 0x03, 0x00 }
+})
+}
+```
+
+####
+
+```
+Device (GFX0)
+{
+Name (_ADR, 0x00020000)
+Method (_DSM, 4, NotSerialized)
+{
+Store (Package (0x04)
+{
+"device-id",
+Buffer (0x04)
+{
+0x26, 0x01, 0x00, 0x00
+},
+
+"AAPL,snb-platform-id",
+Buffer (0x04)
+{
+0x10, 0x00, 0x03, 0x00
+}
+}, Local0)
+DTGP (Arg0, Arg1, Arg2, Arg3, RefOf (Local0))
+Return (Local0)
+}
+```
+
+##
+
+#### Insert HDMI audio injection into device IGPU (HD3K HDMI audio - Part 1/2)
+
+```
+into scope label _DSM parent_adr 0x00020000 remove_entry;
+into scope parent_adr 0x00020000 insert
+begin
+    Method (_DSM, 4, NotSerialized)\n
+    {\n
+      If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+      Return (Package()\n
+      {\n
+          "device-id", Buffer() { 0x26, 0x01, 0x00, 0x00 },\n
+          "AAPL,snb-platform-id", Buffer() { 0x10, 0x00, 0x03, 0x00 },\n
+          "hda-gfx", Buffer() { "onboard-1" },\n
+      })\n
+  }\n
+end;
+```
+
+- [GA-Z68X-UD3H-B3 with HD3000 in clover installation?](http://www.tonymacx86.com/yosemite-desktop-support/148290-ga-z68x-ud3h-b3-hd3000-clover-installation.html#post922487)
+- [Clover Intel HD 3000](http://www.tonymacx86.com/graphics/89945-clover-intel-hd-3000-a-3.html#post907803)
+- [audio_hdmi_hd3000](https://github.com/toleda/audio_hdmi_hd3000/blob/master/Patches/AMI-BIOS-HD3000-6_series/sb3-hdmi_audio_ami_bios_hd3000-3.txt)
+
+## Links
+
+- [Clover EFI bootloader](http://sourceforge.net/projects/cloverefiboot/)
+- [Clover Configurator](http://mackie100projects.altervista.org/)
+- [CloverGrowerPro](https://github.com/JrCs/CloverGrowerPro)
+- [FakeSMC - fork of HWSensors by RehabMan](https://github.com/RehabMan/OS-X-FakeSMC-kozlek)
+- [Original HWSensors](https://github.com/kozlek/HWSensors)
+- [OS X Realtek ALC onboard audio with Clover](https://github.com/toleda/audio_CloverALC)
+
+
+
 ## License
 
 Do whatever you like, this is public domain.
